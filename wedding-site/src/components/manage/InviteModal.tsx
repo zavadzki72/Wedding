@@ -5,20 +5,23 @@ import type { Invite } from '../../types';
 interface InviteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (inviteData: { familyName: string; names: string[] }, id?: string) => void;
+  onSave: (inviteData: { familyName: string; celNumber: string; names: string[] }, id?: string) => void;
   inviteToEdit: Invite | null;
 }
 
 const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose, onSave, inviteToEdit }) => {
   const [familyName, setFamilyName] = useState('');
+  const [celNumber, setCelNumber] = useState('');
   const [names, setNames] = useState(['']);
 
   useEffect(() => {
     if (inviteToEdit) {
       setFamilyName(inviteToEdit.familyName);
+      setCelNumber(inviteToEdit.celNumber || '');
       setNames(inviteToEdit.persons); 
     } else {
       setFamilyName('');
+      setCelNumber('');
       setNames(['']);
     }
   }, [inviteToEdit, isOpen]);
@@ -41,11 +44,19 @@ const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose, onSave, invi
     }
   };
 
+  const celNumberMask = (value: string) => {
+    return value
+      .replace(/\D/g, '')
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d)/, '$1-$2')
+      .replace(/(-\d{4})\d+?$/, '$1');
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const validNames = names.filter(name => name.trim() !== '');
     if (familyName.trim() && validNames.length > 0) {
-      onSave({ familyName, names: validNames }, inviteToEdit?.id);
+      onSave({ familyName, celNumber: celNumber.replace(/\D/g, ''), names: validNames }, inviteToEdit?.id);
     }
   };
 
@@ -61,6 +72,16 @@ const InviteModal: React.FC<InviteModalProps> = ({ isOpen, onClose, onSave, invi
               value={familyName}
               onChange={(e) => setFamilyName(e.target.value)}
               placeholder="Ex: Família Silva"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label>Celular (com DDD)</label>
+            <input
+              type="text"
+              value={celNumberMask(celNumber)}
+              onChange={(e) => setCelNumber(e.target.value)}
+              placeholder="(41) 99999-9999"
               required
             />
           </div>

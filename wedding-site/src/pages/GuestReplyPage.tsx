@@ -124,6 +124,7 @@ const GuestReplyPage: React.FC = () => {
           <img src="/assets/images/logo.png" alt="Monograma E&M" className="reply-logo" />
           <h2>Obrigado!</h2>
           <p className="thank-you-message">A sua presença foi registada com sucesso.<br />Mal podemos esperar para celebrar consigo!</p>
+          <Link to="/gifts" className="button primary-reply gifts-link">Ver a nossa lista de presentes</Link>
         </div>
       </div>
     );

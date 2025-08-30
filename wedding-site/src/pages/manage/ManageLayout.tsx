@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react'; // Importe o useState
 import { NavLink, useNavigate, Outlet, Link } from 'react-router-dom';
 import './ManageLayout.css';
 
 const ManageLayout: React.FC = () => {
   const navigate = useNavigate();
+  const [isSidebarOpen, setSidebarOpen] = useState(false); // Estado para controlar a sidebar
 
   const handleLogout = () => {
     localStorage.removeItem('@WeddingApp:token');
     navigate('/login');
   };
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <div className="manage-layout">
-      <aside className="sidebar">
+      <button className="menu-toggle-manage" onClick={toggleSidebar}>
+        <i className={isSidebarOpen ? "fas fa-times" : "fas fa-bars"}></i>
+      </button>
+
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <Link to="/">
             <img src="/assets/images/logo.png" alt="Monograma E&M" className="sidebar-logo" />
@@ -22,19 +31,19 @@ const ManageLayout: React.FC = () => {
         <nav className="sidebar-nav">
           <ul>
             <li>
-              <NavLink to="/manage/invites">
+              <NavLink to="/manage/invites" onClick={() => setSidebarOpen(false)}>
                 <i className="fas fa-envelope nav-icon"></i>
                 Convites
               </NavLink>
             </li>
             <li>
-              <NavLink to="/manage/guests">
+              <NavLink to="/manage/guests" onClick={() => setSidebarOpen(false)}>
                 <i className="fas fa-users nav-icon"></i>
                 Convidados
               </NavLink>
             </li>
             <li>
-              <NavLink to="/manage/gifts">
+              <NavLink to="/manage/gifts" onClick={() => setSidebarOpen(false)}>
                 <i className="fas fa-gift nav-icon"></i>
                 Presentes
               </NavLink>

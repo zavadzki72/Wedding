@@ -146,21 +146,22 @@ const ManageGifts: React.FC = () => {
                 <th>Ações</th>
               </tr>
             </thead>
+
             <tbody>
               {products.length > 0 ? (
                 products.map((product) => (
                   <tr key={product.id}>
-                    <td><img src={product.photo} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }} /></td>
-                    <td>{product.name}</td>
-                    <td>{formatCurrency(product.value)}</td>
-                    <td>
+                    <td data-label="Foto"><img src={product.photo} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }} /></td>
+                    <td data-label="Nome">{product.name}</td>
+                    <td data-label="Valor">{formatCurrency(product.value)}</td>
+                    <td data-label="Status">
                       {product.isSold ? (
                         <span className="status responded">Comprado</span>
                       ) : (
                         <span className="status pending">Disponível</span>
                       )}
                     </td>
-                    <td>
+                    <td data-label="Ações">
                       <div className="actions">
                         {!product.isSold && (
                           <button className="action-button sold" title="Marcar como Comprado" onClick={() => handleMarkAsSold(product.id)}>

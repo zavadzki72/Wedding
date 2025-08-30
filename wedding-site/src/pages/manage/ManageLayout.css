@@ -301,7 +301,7 @@ tbody tr:hover {
 }
 
 .accordion-content {
-  padding: 0 1.5rem 1.5rem 1.5rem;
+  padding: 1.5rem 1.5rem 1.5rem 1.5rem;
 }
 
 .person-detail-row {
@@ -358,4 +358,131 @@ tbody tr:hover {
 .logout-button:hover {
   background-color: #ffe3e3;
   border-color: #d93025;
+}
+
+.action-button.whatsapp {
+  color: #25D366;
+}
+
+.action-button.whatsapp:hover {
+  background-color: #e9f9ee;
+}
+
+.menu-toggle-manage {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1100;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    color: #54769C;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+@media screen and (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        left: -260px;
+        top: 0;
+        height: 100%;
+        z-index: 1000;
+        transition: left 0.3s ease-in-out;
+    }
+
+    .sidebar.open {
+        left: 0; 
+    }
+
+    .main-content {
+        padding: 2rem 1.5rem;
+        width: 100vw;
+    }
+
+    .main-content-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .main-content-header h1 {
+        font-size: 2rem;
+    }
+    
+    .menu-toggle-manage {
+        display: flex; 
+    }
+
+    .filters .button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
+    .table-container table {
+        width: 100%;
+    }
+    
+    .table-container thead {
+        display: none;
+    }
+    
+    .table-container tr {
+        display: block;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding: 0.5rem;
+    }
+    
+    .table-container td {
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center;
+        border: none;
+        border-bottom: 1px solid #eee;
+        padding: 0.8rem 0.5rem;
+        text-align: right;
+    }
+
+    .table-container td:last-child {
+        border-bottom: none;
+    }
+    
+    .table-container td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #333;
+        text-align: left;
+        padding-right: 1rem;
+    }
+
+    .accordion-content .person-detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-radius: 6px;
+        background-color: #f8f9fa;
+        margin-bottom: 0.5rem;
+    }
+
+    .accordion-content .person-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+        font-size: 0.9rem;
+    }
+
+    .accordion-content .status {
+        align-self: flex-end;
+        margin-top: 0.5rem;
+    }
 }

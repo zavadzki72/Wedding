@@ -8,6 +8,7 @@ export interface Person {
 export interface Invite {
   id: string;
   familyName: string;
+  celNumber: string;
   persons: string[];
   isResponded: boolean;
   inviteUrl: string;
