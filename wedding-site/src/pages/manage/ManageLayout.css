@@ -125,7 +125,6 @@
   border-color: #3e5a7a;
 }
 
-/* --- Filtros --- */
 .filters {
   margin-bottom: 2rem;
   display: flex;
@@ -143,7 +142,7 @@
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   padding: 1rem;
-  overflow-x: auto; 
+  overflow-x: auto;
 }
 
 table {
@@ -152,7 +151,8 @@ table {
   text-align: left;
 }
 
-th, td {
+th,
+td {
   padding: 1rem 1.2rem;
   border-bottom: 1px solid #f1f3f5;
 }
@@ -199,6 +199,7 @@ tbody tr:hover {
 .actions {
   display: flex;
   gap: 0.5rem;
+  justify-content: flex-end;
 }
 
 .action-button {
@@ -216,9 +217,17 @@ tbody tr:hover {
   transition: background-color 0.2s;
 }
 
-.action-button.edit { color: #54769C; }
-.action-button.reset { color: #f59f00; }
-.action-button:hover { background-color: #e9ecef; }
+.action-button.edit {
+  color: #54769C;
+}
+
+.action-button.reset {
+  color: #f59f00;
+}
+
+.action-button:hover {
+  background-color: #e9ecef;
+}
 
 .copy-link-btn {
   background-color: transparent;
@@ -240,12 +249,16 @@ tbody tr:hover {
 }
 
 .action-button.qr {
-    color: #343a40; 
+  color: #343a40;
 }
 
 .action-button.delete {
-    color: #d93025; 
-} 
+  color: #d93025;
+}
+
+.action-button.sold {
+  color: #00875a;
+}
 
 .accordion {
   width: 100%;
@@ -255,7 +268,7 @@ tbody tr:hover {
   background-color: white;
   border-radius: 8px;
   margin-bottom: 1rem;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   transition: all 0.3s ease;
 }

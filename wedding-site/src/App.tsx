@@ -6,10 +6,15 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import ManageLayout from './pages/manage/ManageLayout';
 import ManagePage from './pages/manage/ManagePage';
-
-import './App.css';
 import GuestReplyPage from './pages/GuestReplyPage';
 import GuestsPage from './pages/manage/GuestsPage';
+import ManageGifts from './pages/manage/ManageGifts';
+import GiftsPage from './pages/GiftsPage';
+import SelectionPage from './pages/SelectionPage';
+import PaymentStatusPage from './pages/PaymentStatusPage';
+
+import './App.css';
+import './styles/GiftsPage.css';
 
 const App: React.FC = () => {
   return (
@@ -17,6 +22,10 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
+
+        <Route path="/gifts" element={<GiftsPage />} />
+        <Route path="/selection" element={<SelectionPage />} />
+        <Route path="/payment-status" element={<PaymentStatusPage />} />
 
         <Route path="/wedding/guest-invite/:inviteId" element={<GuestReplyPage />} />
 
@@ -31,6 +40,7 @@ const App: React.FC = () => {
           <Route index element={<ManagePage />} /> 
           <Route path="invites" element={<ManagePage />} />
           <Route path="guests" element={<GuestsPage />} />
+          <Route path="gifts" element={<ManageGifts />} />
         </Route>
       </Routes>
     </BrowserRouter>

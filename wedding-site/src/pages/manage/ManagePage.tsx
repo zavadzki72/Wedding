@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../../services/api';
 
-import './ManageLayout.css'; 
+import './ManageLayout.css';
 import type { Invite } from '../../types';
 import QrCodeModal from './QrCodeModal';
 import InviteModal from '../../components/manage/InviteModal';
@@ -35,14 +35,14 @@ const ManagePage: React.FC = () => {
       const invitesWithId = response.data.data.map((invite: any) => {
         const urlParts = invite.inviteUrl.split('/');
         const id = urlParts[urlParts.length - 1];
-        
+
         return {
           ...invite,
           id: id,
         };
       });
 
-      setInvites(invitesWithId); 
+      setInvites(invitesWithId);
     } catch (err) {
       setError('Não foi possível carregar os convites.');
       console.error('Erro ao buscar convites:', err);
@@ -82,9 +82,9 @@ const ManagePage: React.FC = () => {
       console.error('Erro ao salvar convite:', err);
     }
   };
-  
+
   const handleResetReply = async (id: string) => {
-    if(window.confirm('Tem certeza que deseja resetar a resposta deste convite?')) {
+    if (window.confirm('Tem certeza que deseja resetar a resposta deste convite?')) {
       try {
         await api.put(`/Manager/reset-reply-invite/${id}`);
         fetchInvites(activeFilter);
@@ -129,20 +129,20 @@ const ManagePage: React.FC = () => {
       </div>
 
       <div className="filters">
-        <button 
+        <button
           className={`button ${activeFilter === 'all' ? 'active' : ''}`}
           onClick={() => handleFilterClick('all')}>
-            Todos
+          Todos
         </button>
-        <button 
+        <button
           className={`button ${activeFilter === 'pending' ? 'active' : ''}`}
           onClick={() => handleFilterClick('pending')}>
-            Pendentes
+          Pendentes
         </button>
-        <button 
+        <button
           className={`button ${activeFilter === 'responded' ? 'active' : ''}`}
           onClick={() => handleFilterClick('responded')}>
-            Respondidos
+          Respondidos
         </button>
       </div>
 
@@ -167,7 +167,7 @@ const ManagePage: React.FC = () => {
                     <td>{invite.familyName}</td>
                     <td>{invite.persons.length}</td>
                     <td>
-                      {invite.isResponded ? ( 
+                      {invite.isResponded ? (
                         <span className="status responded">Respondido</span>
                       ) : (
                         <span className="status pending">Pendente</span>
@@ -188,19 +188,21 @@ const ManagePage: React.FC = () => {
                         )}
                       </button>
                     </td>
-                    <td className="actions">
-                      <button className="action-button qr" title="Gerar QR Code" onClick={() => handleOpenQrModal(invite)}>
-                        <i className="fas fa-qrcode"></i>
-                      </button>
-                      <button className="action-button edit" title="Editar" onClick={() => handleOpenEditModal(invite)}>
-                        <i className="fas fa-pencil-alt"></i>
-                      </button>
-                      <button className="action-button reset" title="Resetar Resposta" onClick={() => handleResetReply(invite.id)}>
-                        <i className="fas fa-undo"></i>
-                      </button>
-                      <button className="action-button delete" title="Remover Convite" onClick={() => handleDeleteInvite(invite.id)}>
-                        <i className="fas fa-trash-alt"></i>
-                      </button>
+                    <td>
+                      <div className="actions">
+                        <button className="action-button qr" title="Gerar QR Code" onClick={() => handleOpenQrModal(invite)}>
+                          <i className="fas fa-qrcode"></i>
+                        </button>
+                        <button className="action-button edit" title="Editar" onClick={() => handleOpenEditModal(invite)}>
+                          <i className="fas fa-pencil-alt"></i>
+                        </button>
+                        <button className="action-button reset" title="Resetar Resposta" onClick={() => handleResetReply(invite.id)}>
+                          <i className="fas fa-undo"></i>
+                        </button>
+                        <button className="action-button delete" title="Remover Convite" onClick={() => handleDeleteInvite(invite.id)}>
+                          <i className="fas fa-trash-alt"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -213,7 +215,7 @@ const ManagePage: React.FC = () => {
           </table>
         )}
       </div>
-      
+
       <InviteModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
