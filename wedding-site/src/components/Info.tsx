@@ -14,7 +14,7 @@ const Info: React.FC = () => {
         <div className="info_card">
           <i className="fa-regular fa-gem"></i>
           <h3>Cerimônia</h3>
-          <p>A cerimônia religiosa será realizada às <strong>16:00</strong> no dia 20 de Abril de 2026, no centro de eventos da Volvo. Pedimos que cheguem com 15 minutos de antecedência.</p>
+          <p>A cerimônia religiosa será realizada às <strong>16:00</strong> no dia 20 de Abril de 2026, no centro de eventos da Volvo. Pedimos que cheguem com 30 minutos de antecedência.</p>
         </div>
         <div className="info_card">
           <i className="fa-solid fa-champagne-glasses"></i>
@@ -32,9 +32,9 @@ const Info: React.FC = () => {
           <p>Sua presença é muito importante para nós! Por favor, confirme se poderá comparecer até o dia <strong>20 de janeiro de 2026</strong> através do link de confirmação</p>
         </div>
         <div className="info_card">
-          <i className="fa-solid fa-scissors"></i>
-          <h3>Dica de Beleza</h3>
-          <p>Para sua comodidade, sugerimos o salão "Spazio Cris", no centro de Colombo. Recomendamos agendar seu horário com antecedência. Tem um descontinho pra quem é nosso convidado!</p>
+          <i className="fa-solid fa-camera-retro"></i>
+          <h3>Fotos</h3>
+          <p>Esperamos que vocês tirem bastante fotos e nos mostrem depois!</p>
         </div>
         <div className="info_card">
           <i className="fa-solid fa-gift"></i>

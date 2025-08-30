@@ -34,7 +34,7 @@ const History: React.FC = () => {
           <div className="timeline_content">
             <img src="/assets/images/tl_3.JPEG" alt="O pedido de namoro" />
             <h3>O Pedido de Namoro</h3>
-            <span>Maio de 2021</span>
+            <span>Novembro de 2022</span>
             <p>Em um jantar à luz de velas, a pergunta foi feita e um 'sim' emocionado mudou nossas vidas para sempre.</p>
           </div>
         </div>
@@ -43,7 +43,7 @@ const History: React.FC = () => {
           <div className="timeline_content">
             <img src="/assets/images/tl_4.JPEG" alt="O pedido de casamento" />
             <h3>O Pedido de Casamento</h3>
-            <span>Dezembro de 2024</span>
+            <span>Abril de 2025</span>
             <p>No lugar onde nos vimos pela primeira vez, veio o pedido que nos trouxe até este momento: a contagem regressiva para o nosso 'sim'.</p>
           </div>
         </div>
