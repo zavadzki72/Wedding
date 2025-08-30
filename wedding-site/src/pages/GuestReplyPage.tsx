@@ -18,6 +18,8 @@ const GuestReplyPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [alreadyResponded, setAlreadyResponded] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const cpfMask = (value: string) => {
     return value
@@ -36,6 +38,32 @@ const GuestReplyPage: React.FC = () => {
       .replace(/(\d{4})\d+?$/, '$1');
   };
 
+  const isValidCPF = (cpf: string) => {
+    cpf = cpf.replace(/[^\d]+/g, '');
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+    let sum = 0;
+    let remainder;
+    for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+    remainder = (sum * 10) % 11;
+    if ((remainder === 10) || (remainder === 11)) remainder = 0;
+    if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+    sum = 0;
+    for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+    remainder = (sum * 10) % 11;
+    if ((remainder === 10) || (remainder === 11)) remainder = 0;
+    if (remainder !== parseInt(cpf.substring(10, 11))) return false;
+    return true;
+  };
+
+  const isValidBirthDate = (dateStr: string) => {
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return false;
+    const [day, month, year] = dateStr.split('/').map(Number);
+    const date = new Date(year, month - 1, day);
+    if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return false;
+    const age = new Date().getFullYear() - year;
+    return age >= 0 && age <= 120;
+  };
+
   const fetchInviteDetails = useCallback(async () => {
     try {
       const response = await api.get(`/Guest/invite/${inviteId}`);
@@ -44,10 +72,14 @@ const GuestReplyPage: React.FC = () => {
         setAlreadyResponded(true);
       } else {
         setInvite(inviteData);
-        setResponses(inviteData.persons.map((name: string) => ({ name, isAccepted: true, cpf: '', birthDate: '' })));
+        setResponses(inviteData.persons.map((name: string) => ({ name, isAccepted: null, cpf: '', birthDate: '' })));
       }
-    } catch (err) {
-      setError('Convite não encontrado ou inválido.');
+    } catch (err: any) {
+      if (err.response && err.response.status === 400) {
+        setError('Convite inválido ou não encontrado.');
+      } else {
+        setError('Ocorreu um erro ao carregar o convite. Tente novamente mais tarde.');
+      }
     } finally {
       setLoading(false);
     }
@@ -58,35 +90,60 @@ const GuestReplyPage: React.FC = () => {
   }, [fetchInviteDetails]);
 
   const handleResponseChange = (personName: string, field: keyof Person, value: any) => {
+    if (validationError) {
+      setValidationError(null);
+    }
     setResponses(prev =>
       prev.map(p => (p.name === personName ? { ...p, [field]: value } : p))
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const allPersonsPayload = responses.map(p => {
-      if (p.isAccepted) {
-        const [day, month, year] = p.birthDate.split('/');
-        const isoDate = new Date(`${year}-${month}-${day}`).toISOString();
-        return {
-          name: p.name,
-          isAccepted: p.isAccepted,
-          cpf: p.cpf.replace(/\D/g, ''),
-          birthDate: isoDate,
-        };
-      } else {
-        return {
-          name: p.name,
-          isAccepted: p.isAccepted,
-          cpf: null,
-          birthDate: null
-        };
+  const validateCurrentStep = () => {
+    const currentResponse = responses[currentStep];
+    if (currentResponse.isAccepted === null) {
+      setValidationError('Por favor, selecione uma das opções para continuar.');
+      return false;
+    }
+    if (currentResponse.isAccepted === true) {
+      if (!isValidCPF(currentResponse.cpf)) {
+        setValidationError('O CPF informado não é válido.');
+        return false;
       }
+      if (!isValidBirthDate(currentResponse.birthDate)) {
+        setValidationError('A data de nascimento informada não é válida.');
+        return false;
+      }
+    }
+    return true;
+  }
+  
+  const handleNext = () => {
+    if (!validateCurrentStep()) return;
+    setValidationError(null);
+    if (currentStep < responses.length - 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    setValidationError(null);
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!validateCurrentStep()) return;
+    const allPersonsPayload = responses.map(p => {
+        if (p.isAccepted) {
+            const [day, month, year] = p.birthDate.split('/');
+            const isoDate = new Date(`${year}-${month}-${day}`).toISOString();
+            return { name: p.name, isAccepted: true, cpf: p.cpf.replace(/\D/g, ''), birthDate: isoDate };
+        } else {
+            return { name: p.name, isAccepted: false, cpf: null, birthDate: null };
+        }
     });
-
     const payload = { inviteId, persons: allPersonsPayload };
-
     try {
       await api.post('/Guest/invite/reply', payload);
       setSubmitted(true);
@@ -94,103 +151,96 @@ const GuestReplyPage: React.FC = () => {
       setError('Ocorreu um erro ao enviar a sua resposta.');
     }
   };
-  if (loading) {
+
+  if (loading) { return <div className="reply-container"><div className="reply-card"><p>A carregar detalhes do convite...</p></div></div>; }
+  
+  if (error) {
     return (
       <div className="reply-container">
-        <div className="reply-card">
-          <p>A carregar detalhes do convite...</p>
+        <div className="reply-card status-card">
+          <img src="/assets/images/logo.png" alt="Monograma E&M" className="status-logo" />
+          <h2 className="status-title">Oops!</h2>
+          <p className="status-message">{error}</p>
+          <Link to="/" className="button status-button">Voltar para a página inicial</Link>
         </div>
       </div>
     );
   }
 
-  if (alreadyResponded) {
-    return (
-      <div className="reply-container">
-        <div className="reply-card">
-          <img src="/assets/images/logo.png" alt="Monograma E&M" className="reply-logo" />
-          <h2>Resposta Recebida!</h2>
-          <p className="thank-you-message">Já recebemos a vossa resposta para o nosso casamento.<br />Obrigado!</p>
-          <Link to="/" className="button primary-reply gifts-link">Ver a nossa lista de presentes</Link>
-        </div>
-      </div>
-    );
-  }
+  if (alreadyResponded) { return <div className="reply-container"><div className="reply-card status-card"><img src="/assets/images/logo.png" alt="Monograma E&M" className="status-logo" /><h2 className="status-title">Resposta Recebida!</h2><p className="status-message">Já recebemos a vossa resposta para o nosso casamento. Obrigado!</p><Link to="/gifts" className="button status-button">Ver a nossa lista de presentes</Link></div></div>; }
+  if (submitted) { return <div className="reply-container"><div className="reply-card status-card"><img src="/assets/images/logo.png" alt="Monograma E&M" className="status-logo" /><h2 className="status-title">Obrigado!</h2><p className="status-message">A sua presença foi registada com sucesso. Mal podemos esperar para celebrar consigo!</p><Link to="/gifts" className="button status-button">Ver a nossa lista de presentes</Link></div></div>; }
+  if (responses.length === 0) { return <div className="reply-container"><div className="reply-card"><p>Carregando convite...</p></div></div>; }
 
-  if (submitted) {
-    return (
-      <div className="reply-container">
-        <div className="reply-card">
-          <img src="/assets/images/logo.png" alt="Monograma E&M" className="reply-logo" />
-          <h2>Obrigado!</h2>
-          <p className="thank-you-message">A sua presença foi registada com sucesso.<br />Mal podemos esperar para celebrar consigo!</p>
-          <Link to="/gifts" className="button primary-reply gifts-link">Ver a nossa lista de presentes</Link>
-        </div>
-      </div>
-    );
-  }
+  const radioStateClass = responses[currentStep].isAccepted === true 
+    ? 'is-yes' 
+    : responses[currentStep].isAccepted === false 
+    ? 'is-no' 
+    : '';
 
   return (
-    <>
-    <title>Evelyn & Marccus - Confirme sua presença!</title>
-    <meta name="description" content="Confirme sua presença para celebrar conosco!" />
-
     <div className="reply-container">
       <div className="reply-card">
-        {error ? (
-          <>
-            <h2 style={{ color: '#d93025' }}>Erro</h2>
-            <p>{error}</p>
-          </>
-        ) : (
           <>
             <img src="/assets/images/logo.png" alt="Monograma E&M" className="reply-logo" />
             <h1>Confirmação de Presença</h1>
             <p className="welcome-message">Bem-vinda, <strong>{invite?.familyName}</strong>!</p>
-            <p className="instruction-message">Por favor, confirme a presença de cada convidado abaixo.</p>
-            <form onSubmit={handleSubmit}>
-              {responses.map(person => (
-                <div key={person.name} className="person-block">
+            <div className="step-indicator">
+              {responses.map((person, index) => (
+                <React.Fragment key={index}>
+                  <div className={`step ${index === currentStep ? 'active' : ''} ${responses[index].isAccepted !== null ? 'completed' : ''}`}>
+                    <div className="step-number">{responses[index].isAccepted !== null ? <i className="fas fa-check"></i> : index + 1}</div>
+                    <div className="step-name">{person.name.split(' ')[0]}</div>
+                  </div>
+                  {index < responses.length - 1 && <div className="step-line"></div>}
+                </React.Fragment>
+              ))}
+            </div>
+            <div className="step-content">
+              <h2>{responses[currentStep].name}</h2>
+              <p className="instruction-message">Por favor, confirme sua presença.</p>
+              <form>
+                <div className="person-block">
                   <div className="person-row">
-                    <span className="person-name">{person.name}</span>
-                    <div className="radio-group">
-                      <label className={person.isAccepted ? 'active' : ''}>
-                        <input type="radio" name={person.name} checked={person.isAccepted} onChange={() => handleResponseChange(person.name, 'isAccepted', true)} />
+                    <div className={`radio-toggle ${radioStateClass}`}>
+                      <span className="radio-toggle-pill"></span>
+                      <label>
+                        <input type="radio" name={`${responses[currentStep].name}-rsvp`} checked={responses[currentStep].isAccepted === true} onChange={() => handleResponseChange(responses[currentStep].name, 'isAccepted', true)} />
+                        <i className="fas fa-check"></i>
                         Sim, irei!
                       </label>
-                      <label className={!person.isAccepted ? 'active' : ''}>
-                        <input type="radio" name={person.name} checked={!person.isAccepted} onChange={() => handleResponseChange(person.name, 'isAccepted', false)} />
+                      <label>
+                        <input type="radio" name={`${responses[currentStep].name}-rsvp`} checked={responses[currentStep].isAccepted === false} onChange={() => handleResponseChange(responses[currentStep].name, 'isAccepted', false)} />
+                        <i className="fas fa-times"></i>
                         Não poderei ir
                       </label>
                     </div>
                   </div>
-                  {person.isAccepted && (
+                  {responses[currentStep].isAccepted === true && (
                     <div className="person-details">
-                      <input
-                        type="text"
-                        placeholder="CPF"
-                        value={person.cpf}
-                        onChange={(e) => handleResponseChange(person.name, 'cpf', cpfMask(e.target.value))}
-                        required={person.isAccepted}
-                      />
-                      <input
-                        type="text"
-                        placeholder="Data de Nascimento (DD/MM/AAAA)"
-                        value={person.birthDate}
-                        onChange={(e) => handleResponseChange(person.name, 'birthDate', dateMask(e.target.value))}
-                        required={person.isAccepted}
-                      />
+                      <p className="details-instruction">Preencha as informações abaixo (precisamos delas para que sua entrada seja liberada)</p>
+                      <input type="text" placeholder="CPF" value={responses[currentStep].cpf} onChange={(e) => handleResponseChange(responses[currentStep].name, 'cpf', cpfMask(e.target.value))} />
+                      <input type="text" placeholder="Data de Nascimento (DD/MM/AAAA)" value={responses[currentStep].birthDate} onChange={(e) => handleResponseChange(responses[currentStep].name, 'birthDate', dateMask(e.target.value))} />
                     </div>
                   )}
                 </div>
-              ))}
-              <button type="submit" className="button primary-reply">Confirmar Presença</button>
-            </form>
+                <div className="step-navigation">
+                  {currentStep > 0 && (
+                    <button type="button" onClick={handlePrevious} className="button secondary-reply">Voltar</button>
+                  )}
+                  <div className="navigation-primary-action">
+                    {validationError && <p className="validation-error">{validationError}</p>}
+                    {currentStep < responses.length - 1 ? (
+                      <button type="button" onClick={handleNext} className="button primary-reply">Próximo</button>
+                    ) : (
+                      <button type="button" onClick={handleSubmit} className="button primary-reply">Confirmar Presença</button>
+                    )}
+                  </div>
+                </div>
+              </form>
+            </div>
           </>
-        )}
       </div>
     </div>
-    </>
   );
 };
 

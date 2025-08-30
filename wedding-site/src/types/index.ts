@@ -1,6 +1,6 @@
 export interface Person {
   name: string;
-  isAccepted: boolean;
+  isAccepted: boolean | null;
   birthDate: string;
   cpf: string;
 }
