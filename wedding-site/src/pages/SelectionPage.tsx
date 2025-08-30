@@ -7,7 +7,7 @@ import type { CheckoutDto } from '../types';
 const SelectionPage: React.FC = () => {
   const { selectedItems, removeGift, getSelectionTotal, clearSelection } = useGiftSelection();
 
-  const [guestName, setGuestName] = useState('');
+  const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,14 +25,14 @@ const SelectionPage: React.FC = () => {
     setError(null);
 
     const payload: CheckoutDto = {
-      guestName,
+      name,
       message,
-      productIds: selectedItems.map(item => item.id),
+      products: selectedItems.map(item => item.id),
     };
 
     try {
-      const response = await api.post('/Gift/checkout', payload);
-      const paymentUrl = response.data.data.paymentUrl;
+      const response = await api.post('/Gift/products/buy', payload);
+      const paymentUrl = response.data.data;
 
       if (paymentUrl) {
         clearSelection();
@@ -84,13 +84,13 @@ const SelectionPage: React.FC = () => {
               <form onSubmit={handleSubmit} className="cart-form">
                 <h2>Deixe sua mensagem</h2>
                 <div className="form-group">
-                  <label htmlFor="guestName">Seu nome</label>
+                  <label htmlFor="name">Seu nome</label>
                   <input
                     type="text"
-                    id="guestName"
-                    value={guestName}
-                    onChange={(e) => setGuestName(e.target.value)}
-                    placeholder="Nome e sobrenome"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Nomes"
                     required
                   />
                 </div>

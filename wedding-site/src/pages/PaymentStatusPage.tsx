@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-// Estilos virão do novo arquivo CSS
 
 const PaymentStatusPage: React.FC = () => {
   const [searchParams] = useSearchParams();

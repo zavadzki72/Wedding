@@ -47,7 +47,7 @@ export interface Product {
 }
 
 export interface CheckoutDto {
-  guestName: string;
+  name: string;
   message: string;
-  productIds: string[];
+  products: string[];
 }
