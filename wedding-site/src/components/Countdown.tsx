@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
+interface TimeLeft {
+  days?: number;
+  hours?: number;
+  minutes?: number;
+  seconds?: number;
+}
+
 const Countdown: React.FC = () => {
   const weddingDate = new Date('April 20, 2026 16:00:00').getTime();
-  const [countdown, setCountdown] = useState<string>('');
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({});
+  const [isFinished, setIsFinished] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -10,21 +18,49 @@ const Countdown: React.FC = () => {
       const distance = weddingDate - now;
 
       if (distance < 0) {
-        setCountdown("FELIZES PARA SEMPRE!");
+        setIsFinished(true);
         clearInterval(interval);
       } else {
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        setCountdown(`${days}D ${hours}H ${minutes}M ${seconds}S`);
+        setTimeLeft({
+          days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((distance % (1000 * 60)) / 1000),
+        });
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [weddingDate]);
 
-  return <span id="countdown">{countdown || 'CONTANDO OS DIAS...'}</span>;
+  if (isFinished) {
+    return <span id="countdown">Felizes para Sempre!</span>;
+  }
+
+  if (!timeLeft.days && timeLeft.days !== 0) {
+      return <span id="countdown">Contando os dias...</span>
+  }
+
+  return (
+    <div id="countdown">
+      <div className="countdown-item">
+        <span className="countdown-number">{timeLeft.days}</span>
+        <span className="countdown-label">Dias</span>
+      </div>
+      <div className="countdown-item">
+        <span className="countdown-number">{timeLeft.hours}</span>
+        <span className="countdown-label">Horas</span>
+      </div>
+      <div className="countdown-item">
+        <span className="countdown-number">{timeLeft.minutes}</span>
+        <span className="countdown-label">Minutos</span>
+      </div>
+      <div className="countdown-item">
+        <span className="countdown-number">{timeLeft.seconds}</span>
+        <span className="countdown-label">Segundos</span>
+      </div>
+    </div>
+  );
 };
 
 export default Countdown;
