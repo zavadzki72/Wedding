@@ -187,6 +187,7 @@
   font-weight: 700;
   color: var(--gold);
   margin-bottom: 1.5rem;
+  font-family: "Libertinus Serif Display", system-ui;
 }
 
 .gift-card-actions {
@@ -232,6 +233,7 @@
   background-color: transparent;
   color: var(--dark_blue);
   border: 2px solid var(--dark_blue);
+  display: inline-block;
 }
 
 .button.tertiary:hover {
@@ -379,6 +381,7 @@
 .cart-item-price {
   color: var(--gray);
   font-size: 1rem;
+  font-family: "Libertinus Serif Display", system-ui;
 }
 
 .cart-item-remove {
@@ -414,6 +417,7 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--gold);
+  font-family: "Libertinus Serif Display", system-ui;
 }
 
 .cart-form h2 {

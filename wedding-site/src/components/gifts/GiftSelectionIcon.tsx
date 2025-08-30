@@ -8,7 +8,7 @@ const GiftSelectionIcon: React.FC = () => {
 
   return (
     <Link to="/selection" className="cart-icon">
-      <i className="fas fa-gift"></i>
+      <i className="fa-regular fa-money-bill-1"></i>
       {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
     </Link>
   );

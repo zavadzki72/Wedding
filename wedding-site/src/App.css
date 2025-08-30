@@ -732,3 +732,130 @@ main {
         padding: 1rem;
     }
 }
+
+.local_container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3rem;
+  background-color: var(--white);
+  padding: 2.5rem;
+  border-radius: 8px;
+  border: 1px solid #e0eaf1;
+  box-shadow: 0 5px 25px rgba(84, 118, 156, 0.08);
+}
+
+.local_info {
+  flex: 1;
+  min-width: 300px;
+}
+
+.local_info h3 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.local_info h3 i {
+  color: var(--gold);
+}
+
+.local_address {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0.5rem 0 2rem 0;
+  color: var(--gray);
+}
+
+.local_buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.btn-local {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background-color: var(--dark_blue);
+  color: var(--white);
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid var(--dark_blue);
+}
+
+.btn-local:hover {
+  background-color: #3e5a7a;
+  border-color: #3e5a7a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.btn-local.btn-secondary {
+  background-color: transparent;
+  color: var(--dark_blue);
+}
+
+.btn-local.btn-secondary:hover {
+  background-color: var(--ligth_blue);
+  color: var(--dark_blue);
+  box-shadow: none;
+}
+
+.local_tips {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  border-top: 1px solid #e0eaf1;
+  padding-top: 2rem;
+}
+
+.tip_card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.tip_card i {
+  font-size: 1.5rem;
+  color: var(--gold);
+  margin-top: 0.2rem;
+  width: 25px;
+}
+
+.tip_card h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  color: var(--dark);
+}
+
+.tip_card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--gray);
+}
+
+.local_map {
+  flex: 1.2;
+  min-width: 300px;
+  height: 400px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.local_map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  filter: grayscale(20%) contrast(90%);
+}
