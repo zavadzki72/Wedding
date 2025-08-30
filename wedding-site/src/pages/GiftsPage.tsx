@@ -40,7 +40,9 @@ const GiftsPage: React.FC = () => {
   const filteredProducts = useMemo(() => {
     return allProducts
       .filter(product => {
-        if (selectedCategory !== 'all' && product.category !== selectedCategory) {
+        const categoryAsNumber = selectedCategory === 'all' ? 'all' : Number(selectedCategory);
+
+        if (categoryAsNumber !== 'all' && product.category !== categoryAsNumber) {
           return false;
         }
         if (searchTerm && !product.name.toLowerCase().includes(searchTerm.toLowerCase())) {
